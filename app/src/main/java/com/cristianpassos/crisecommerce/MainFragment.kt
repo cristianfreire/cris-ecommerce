@@ -42,8 +42,11 @@ class MainFragment : Fragment() {
             }
         }
 
-        categoriesRecyclerView.apply {
+        val categories = listOf("Jeans", "Socks", "Suits", "Skirts", "Dresses", "Jeans", "Socks", "Pants", "Jacket")
+
+        root.categoriesRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+            adapter = CategoriesAdapter(categories)
         }
 
         return root
