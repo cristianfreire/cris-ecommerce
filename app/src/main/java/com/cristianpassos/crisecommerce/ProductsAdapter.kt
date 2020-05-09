@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cristianpassos.crisecommerce.model.Product
 import com.squareup.picasso.Picasso
 
-class ProductsAdapter(private val products: ArrayList<Product>) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
+class ProductsAdapter(private val products: List<Product>) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ProductsAdapter.ViewHolder, position: Int) {
         val product = products[position]
         Picasso.get().load(product.photoUrl).into(holder.image)
@@ -24,6 +24,7 @@ class ProductsAdapter(private val products: ArrayList<Product>) : RecyclerView.A
         view.setOnClickListener{
             val intent = Intent(parent.context, ProductDetails::class.java)
             intent.putExtra("title", products[holder.adapterPosition].title)
+            intent.putExtra("photo_url", products[holder.adapterPosition].photoUrl )
             parent.context.startActivity(intent)
         }
         return holder

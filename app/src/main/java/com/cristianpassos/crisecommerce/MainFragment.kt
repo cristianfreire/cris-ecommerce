@@ -7,28 +7,43 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cristianpassos.crisecommerce.model.Product
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
+import kotlinx.android.synthetic.main.fragment_main.view.categoriesRecyclerView
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.net.URL
 
 class MainFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val root = inflater.inflate(R.layout.fragment_main, container, false)
 
-        doAsync{
+        doAsync {
             val json = URL("https://finepointmobile.com/data/products.json").readText()
 
             uiThread {
-                d("Cristian", "json:$json")
                 val products = Gson().fromJson(json, Array<Product>::class.java).toList()
+
+                root.recycler_view.apply {
+                    layoutManager = GridLayoutManager(activity, 2)
+                    adapter = ProductsAdapter(products)
+                    root.progressBar.visibility = View.GONE
+                    
+                }
+
             }
         }
-        root.recycler_view.apply {
-            layoutManager = GridLayoutManager(activity, 2)
-//            adapter = ProductsAdapter(products)
+
+        categoriesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
         }
 
         return root
