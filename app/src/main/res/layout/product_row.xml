@@ -10,6 +10,7 @@
         android:id="@+id/photo"
         android:scaleType="centerCrop"
         android:layout_width="0dp"
+        android:transitionName="photoToAnimate"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintLeft_toLeftOf="parent"
