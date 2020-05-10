@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".ProductDetails"
             android:parentActivityName=".MainActivity"/>
+        <activity android:name=".cart.CartActivity" />
     </application>
 
 </manifest>

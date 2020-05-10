@@ -1,12 +1,15 @@
 package com.cristianpassos.crisecommerce
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.room.Room
+import com.cristianpassos.crisecommerce.cart.CartActivity
 import com.cristianpassos.crisecommerce.database.AppDatabase
 import com.cristianpassos.crisecommerce.database.ProductFromDatabase
 import com.cristianpassos.crisecommerce.model.Product
@@ -78,7 +81,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.actionCart){
+            d("cristian", "going to cart")
+            startActivity(Intent(this, CartActivity::class.java))
+            return true
+        }
         drawerLayout.openDrawer(GravityCompat.START)
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
     }
 }
