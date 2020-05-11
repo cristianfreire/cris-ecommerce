@@ -18,7 +18,10 @@ class ProductDetails : AppCompatActivity() {
         setContentView(R.layout.product_details)
 
         val title = intent.getStringExtra("title")
-//        val photoUrl = intent.getStringExtra("photo_url")
+
+        addToCartButton.setOnClickListener {
+            
+        }
 
         val product = ProductsRepository().getProductByName(title)
             .subscribeOn(Schedulers.io())
@@ -29,14 +32,12 @@ class ProductDetails : AppCompatActivity() {
                 thePriceOfProduct.text = "$${it.price}"
             }, {})
 
-
-
         availability.setOnClickListener {
             AlertDialog.Builder(this)
                 .setMessage("Hey, $title is in stock!")
-                .setPositiveButton(
-                    "OK"
-                ) { dialog, which -> }
+                .setPositiveButton("OK") { dialog, which ->
+
+                }
                 .create()
                 .show()
         }

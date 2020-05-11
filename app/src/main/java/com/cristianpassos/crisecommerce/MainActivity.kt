@@ -7,15 +7,13 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.room.Room
 import com.cristianpassos.crisecommerce.cart.CartActivity
 import com.cristianpassos.crisecommerce.database.AppDatabase
+import com.cristianpassos.crisecommerce.database.CartModel
 import com.cristianpassos.crisecommerce.database.ProductFromDatabase
-import com.cristianpassos.crisecommerce.model.Product
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.main.*
 import org.jetbrains.anko.doAsync
@@ -37,8 +35,16 @@ class MainActivity : AppCompatActivity() {
             db.productDao().insertAll(ProductFromDatabase(null, "Socks - one dozen", 1.99))
             val products = db.productDao().getAll()
 
+            val cart = db.cartDao()
+            cart.insertAll(CartModel(null, "Test product", 12.34, 3))
+            val allCartItems = cart.getAll()
+
             uiThread {
                 d("cristian", "products size? ${products.size} ${products[0].title}")
+
+                allCartItems.forEach{
+                    d("cristian", "item in cart: ${it.title} ${it.price}")
+                }
             }
         }
 
