@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.lifecycle.MutableLiveData
+import com.cristianpassos.crisecommerce.repos.ProductsRepository
 import java.net.URL
 
 class ProductDetailsViewModel : ViewModel() {
@@ -15,11 +16,7 @@ class ProductDetailsViewModel : ViewModel() {
 
     fun fetchProductDetails(productTitle: String) {
         viewModelScope.launch(Dispatchers.Default) {
-            val json = URL("https://finepointmobile.com/data/products.json").readText()
-            val list = Gson().fromJson(json, Array<Product>::class.java).toList()
-            val product = list.first { it.title == productTitle }
-
-            productDetails.postValue(product)
+              productDetails.postValue(ProductsRepository().fetchProduct(productTitle))
 
         }
     }
