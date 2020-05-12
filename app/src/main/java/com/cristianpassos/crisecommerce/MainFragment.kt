@@ -9,6 +9,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +27,9 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.categoriesRecyclerView
 
 class MainFragment : Fragment() {
+
+    lateinit var viewModel: MainFragmentViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,7 +37,8 @@ class MainFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_main, container, false)
 
-        val categories = listOf("Jeans", "Socks", "Suits", "Skirts", "Dresses", "Jeans", "Socks", "Pants", "Jacket"
+        val categories = listOf(
+            "Jeans", "Socks", "Suits", "Skirts", "Dresses", "Jeans", "Socks", "Pants", "Jacket"
         )
 
         root.categoriesRecyclerView.apply {
@@ -43,33 +52,37 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-         val productsRepository = ProductsRepository().getAllProducts()
-        loadRecyclerView(productsRepository)
+        viewModel = ViewModelProviders.of(requireActivity()).get(MainFragmentViewModel::class.java)
 
-        searchButton.setOnClickListener {
-            loadRecyclerView(ProductsRepository().searchForProducts(searchTerm.text.toString() ))
-        }
+        viewModel.products.observe(requireActivity(), Observer {
+            loadRecyclerView(it)
+        })
+
+        viewModel.setup()
+
+//         val productsRepository = ProductsRepository().getAllProducts()
+//        loadRecyclerView(productsRepository)
+//
+//        searchButton.setOnClickListener {
+//            loadRecyclerView(ProductsRepository().searchForProducts(searchTerm.text.toString() ))
+//        }
     }
 
-    fun loadRecyclerView(productsRepository: @NonNull Single<List<Product>>?) {
-        val single = productsRepository
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({
-                d("Cristian", "success :)")
-                recycler_view.apply {
-                    layoutManager = GridLayoutManager(activity, 2)
-                    adapter = ProductsAdapter(it){ extraTitle, extraImageUrl, photoView ->
-                        val intent = Intent(activity, ProductDetails::class.java)
-                        intent.putExtra("title", extraTitle)
-                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity as AppCompatActivity, photoView, "photoToAnimated")
-                        startActivity(intent, options.toBundle())
-                    }
-                }
-                progressBar.visibility = View.GONE
-            }, {
-                d("Cristian", " error :( ${it.message}")
-            })
+    private fun loadRecyclerView(products: List<Product>) {
+        recycler_view.apply {
+            layoutManager = GridLayoutManager(activity, 2)
+            adapter = ProductsAdapter(products) { extraTitle, extraImageUrl, photoView ->
+                val intent = Intent(activity, ProductDetails::class.java)
+                intent.putExtra("title", extraTitle)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    activity as AppCompatActivity,
+                    photoView,
+                    "photoToAnimated"
+                )
+                startActivity(intent, options.toBundle())
+            }
+        }
+        progressBar.visibility = View.GONE
     }
 
 }
